@@ -11,7 +11,18 @@ class VideoController extends Controller
 {
     public function index()
     {
-        $data['videos'] = Video::all();
+        $data['videos'] = Video::get();
+
+        $data['accessVideos'] = collect(DB::table('user_video_access')
+        ->where('user_id', auth()->id())
+        ->where('access_expired', '>', now())
+        ->pluck('video_id'));
+
+        $data['pendingRequests'] = collect(DB::table('video_access_requests')
+        ->where('user_id', auth()->id())
+        ->where('status', 'pending')
+        ->pluck('video_id'));
+
         return view('video.index', $data);
     }
 
@@ -105,5 +116,32 @@ class VideoController extends Controller
         $video->delete();
 
         return redirect()->route('video.index')->with('success', 'Post deleted successfully');
+    }
+    
+    public function requestAccess(Request $request)
+    {
+        if(auth()->user()->role_id === 1){
+            abort(403);
+        }
+
+        $exists = DB::table('video_access_requests')
+    ->where('user_id', auth()->id())
+    ->where('video_id', $request->video_id)
+    ->where('status', 'pending')
+    ->first();
+
+        if($exists){
+            return back()->with('error','Request already sent');
+        }
+
+        DB::table('video_access_requests')->insert([
+            'user_id' => auth()->id(),
+            'video_id' => $request->video_id,
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+            
+        return back()->with('success','Request sent to admin');
     }
 }

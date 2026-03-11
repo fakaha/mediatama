@@ -48,7 +48,7 @@
                         @endif
 
                         <button class="mt-5 rounded bg-primary border-0 py-2 px-3 w-100 text-white" type="submit">Register</button>
-                        <p class="text-center mt-3">Sudah punya akun? <a href="{{ route('auth.login') }}">Masuk</a></p>
+                        <p class="text-center mt-3">Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></p>
 
                     </form>
                 </div>

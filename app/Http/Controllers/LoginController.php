@@ -32,7 +32,7 @@ class LoginController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return redirect()->route('auth.login')->with('loginError', 'Email atau password salah');
+        return redirect()->route('login')->with('loginError', 'Email atau password salah');
     }
 
     public function logout(Request $request)
@@ -43,6 +43,6 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('auth.login');
+        return redirect()->route('login');
     }
 }

@@ -37,7 +37,7 @@
                         @auth
                         @if(Auth::user()->role_id == 1)
                         <li class="mav-item">
-                            <a class="nav-link" href="/kategori-items">Users</a>
+                            <a class="nav-link" href="{{route('user.index') }}">Users</a>
                         </li>
                         @endif
                         @endauth

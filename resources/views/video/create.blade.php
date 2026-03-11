@@ -11,15 +11,15 @@
                 @csrf
             <div class="form-group">
                 <label for="name">Title</label>
-                <input type="text" name="name">
+                <input class="form-control" type="text" name="name">
             </div>
 
             <div class="form-group">
                 <label for="url">Video</label>
-                <input type="file" name="url">
+                <input class="form-control" type="file" name="url">
             </div>
 
-            <button type="submit">Upload</button>
+            <button class="rounded bg-primary border-0 mt-3" type="submit">Upload</button>
 
             </form>
         </div>

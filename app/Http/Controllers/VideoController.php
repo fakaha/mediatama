@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -48,6 +49,36 @@ class VideoController extends Controller
         return back()->with('success', 'Video uploaded successfully');
     }
 
+    public function edit($id)
+    {
+        $data['video'] = Video::findOrFail($id);
+
+        return view('video.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $video = Video::findOrFail($id);
+
+        $validate = $request->validate([
+        'name' => 'required',
+        'url' => 'nullable|file|mimetypes:video/mp4'
+        ]);
+
+        if($request->hasFile('url')){
+            Storage::disk('public')->delete($video->url);
+
+            $path = $request->file('url')->store('uploads', 'public');
+
+            $video->url = $path;
+        }
+
+        $video->name = $request->name;
+        $video->save();
+
+        return redirect()->route('video.index')->with('success', 'Video updated successfully');
+    }
+
     public function show($id)
     {
         $data['video'] = Video::findOrFail($id);
@@ -61,5 +92,18 @@ class VideoController extends Controller
         }
         
         return view('video.show', $data);
+    }
+
+    public function delete($id)
+    {
+        if(auth()->user()->role_id !== 1){
+            abort(403);
+        }
+
+        $video = Video::findOrFail($id);
+        
+        $video->delete();
+
+        return redirect()->route('video.index')->with('success', 'Post deleted successfully');
     }
 }
